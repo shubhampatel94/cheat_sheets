@@ -187,3 +187,16 @@ import java.time.temporal.ChronoUnit
 ~~~
 
 13. Handling Spark package Conflict. https://stackoverflow.com/questions/25144484/sbt-assembly-deduplication-found-error
+
+14. Parsing the time
+~~~Scala
+import spark.implicits._
+// time will be in utc here.
+val data = Seq(("2020-05-11T02:30:18-0400")).toDF("time")
+.withColumn("time", to_timestamp(col("time"),"yyyy-MM-dd'T'HH:mm:ssXX"))
+
+// time Normal.
+val data = Seq(("2020-05-11T02:30:18-0400")).toDF("time")
+.withColumn("time", to_timestamp(col("time"),"yyyy-MM-dd'T'HH:mm:ss"))
+
+~~~
