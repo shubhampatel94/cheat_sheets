@@ -33,7 +33,7 @@ spark.sparkContext.stop()
 spark.stop()
 
 conf = (SparkConf()
-        .setAppName("adhits script analysis")
+        .setAppName("The name of the app")
        .set('spark.sql.session.timeZone', 'UTC')
         .set("spark.ui.enabled", "true")
         .set('spark.cores.max', '50')
