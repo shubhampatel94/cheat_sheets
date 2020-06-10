@@ -111,6 +111,7 @@ val conf = new SparkConf()
       .set("spark.cores.max","20") // Total no. of cores.
       .set("spark.executor.memory", "8g") // per executor memory
       .set("spark.ui.enabled", "true") // enable spark ui
+      .set("spark.dynamicAllocation.enabled","false") // Disabling Dynamic Allocation
 
 val spark: SparkSession = SparkSession.builder
       .config(conf)

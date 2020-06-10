@@ -36,10 +36,12 @@ def make(a:Int, b:Int)(Implicit c:Int, d:Double, e:String):Unit = {
 }
 ~~~
 ***
-5. Implicit function in scala is useful. Suppose some conversion is not feasible, and compiler is finding it hard to process. Then in such cases it will look for any possible implicit function available before throwing any error. If compiler will found something, it will use it, otherwise throw an error.
+5. Implicit function in scala is useful. Suppose some conversion is not feasible, and compiler is finding it hard to process. 
+   Then in such cases it will look for any possible implicit function available before throwing any error. 
+   If compiler will found something, it will use it, otherwise throw an error.
 ***
 
-6. Defining a typed function in Scala.
+1. Defining a typed function in Scala.
 
 ~~~Scala
 def func[T](name:T):T = {

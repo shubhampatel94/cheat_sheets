@@ -1,17 +1,4 @@
-1. Using function conversion.
-```python
-pyspark --jar tch.jar
-
-ipAdOp = spark._jvm.x.y.z.b.IpAddress
-
-def conv(column):
-  from pyspark.sql.column import Column, _to_java_column, _to_seq
-  obj = ipAdOp.string2Long
-  return Column(obj(_to_seq()))
-
-
-```
-2. Using UDF Coversion.
+1. Using UDF Coversion.
 
 ~~~python
 from pyspark.sql.column import Column
@@ -31,4 +18,29 @@ from pyspark.sql.functions import avg, udf, substring, col
 df.printSchema()
 
 df.select(getWeek(col("c").cast("long"))).show()
+~~~
+
+2. PySpark Template
+~~~python
+import pyspark
+from pyspark.shell import sqlContext
+from pyspark.sql.functions import *
+from pyspark import SparkContext
+from pyspark.conf import SparkConf
+from pyspark.sql import SQLContext
+
+spark.sparkContext.stop()
+spark.stop()
+
+conf = (SparkConf()
+        .setAppName("adhits script analysis")
+       .set('spark.sql.session.timeZone', 'UTC')
+        .set("spark.ui.enabled", "true")
+        .set('spark.cores.max', '50')
+        .set("spark.executor.memory", "8g")
+        .set("spark.dynamicAllocation.enabled","false")
+      .set("spark.sql.execution.arrow.enabled", "true"))
+sc = SparkContext.getOrCreate(conf = conf)
+sqlContext = SQLContext(sc)
+print(sqlContext)
 ~~~
