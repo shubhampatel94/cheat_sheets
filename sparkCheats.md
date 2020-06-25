@@ -134,14 +134,17 @@ data.withColumn("newCol", split(col("colToSplit"),"regex").getItem(0))
 data.write.mode("overwrite").csv("path_to_file")
 ~~~
 
-10. Calculating Median
+10. Calculating Median 
+Cool e.g. with GroupBy [take a look](https://stackoverflow.com/questions/46845672/median-quantiles-within-pyspark-groupby)
 
 ~~~Scala
 data.stat.approxQuantile("colName", Array(0.5), 0.001) //median
         .head
+
+
 ~~~
 
-11. Creating a UDF function.
+1.  Creating a UDF function.
 ~~~Scala
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions.udf
@@ -199,5 +202,63 @@ val data = Seq(("2020-05-11T02:30:18-0400")).toDF("time")
 // time Normal.
 val data = Seq(("2020-05-11T02:30:18-0400")).toDF("time")
 .withColumn("time", to_timestamp(col("time"),"yyyy-MM-dd'T'HH:mm:ss"))
+
+~~~
+
+
+15.  Window Operation.
+
+~~~Scala
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.functions.row_number
+
+val windowSpec  = Window.partitionBy("department").orderBy("salary")
+  
+df.withColumn("row_number",row_number.over(windowSpec))
+    .show()
+~~~
+
+Calculating the median using for a group.
+
+~~~Scala
+import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.expression.Window
+
+val windowSpec = Window.partitionBy("the_partition_col_or_group_col")
+
+val theExpr = expr("percentile_approx(med_measure_col, 0.5)")
+
+val withMedAttach = data.withColumn("med_val", theExpr.over(windowSpec))
+
+~~~
+
+16. Get Some stats.
+
+Show count, mean, stddev, min, max
+~~~Scala
+
+data.describe.show()
+
+~~~
+
+17. Create histogram in spark scala.
+~~~Scala
+// From min to max.
+// From min to 0 to defined val to max in data.
+
+val startValue = 0.0
+val endValue = 5000.0
+val intervalValue = 100
+val thresholds: Array[Double] = Array(Double.MinValue, 0.0) ++ (((startValue until endValue by intervalValue)
+.toArray ++ Array(Double.MaxValue)).map(_.toDouble))
+
+val initHist = data.select($"column_to_hist" cast "double")
+.rdd.map(r => r.getDouble(0))
+.histogram(thresholds)
+
+val histogramVal = sc.parallelize((thresholds, thresholds.tail, initHist).zipped.toList).toDF("from", "to", "value")
+
+histogramVal.show(1000,false)
 
 ~~~
